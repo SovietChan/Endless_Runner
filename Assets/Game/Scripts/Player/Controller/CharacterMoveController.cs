@@ -23,6 +23,18 @@ public class CharacterMoveController : MonoBehaviour
     private Animator anim;
 
     private PlayerSoundController sound;
+
+    [Header("Scoring")]
+    public ScoreController score;
+    public float scoringRatio;
+    private float lastPositionX;
+
+    [Header("GameOver")]
+    public GameObject gameOverScreen;
+    public float fallPositionY;
+
+    [Header("Camera")]
+    public CameraMoveController gameCamera;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +55,20 @@ public class CharacterMoveController : MonoBehaviour
             }
         }
         anim.SetBool("isOnGround", isOnGround);
+
+        int distancePassed = Mathf.FloorToInt(transform.position.x - lastPositionX);
+        int scoreIncrement = Mathf.FloorToInt(distancePassed / scoringRatio);
+
+        if (scoreIncrement > 0)
+        {
+            score.IncreaseCurrentScore(scoreIncrement);
+            lastPositionX += distancePassed;
+        }
+
+        if (transform.position.y < fallPositionY)
+        {
+            GameOver();
+        }
     }
 
     private void FixedUpdate()
@@ -73,6 +99,17 @@ public class CharacterMoveController : MonoBehaviour
         velocityVector.x = Mathf.Clamp(velocityVector.x + moveAccel * Time.deltaTime, 0.0f, maxSpeed);
         rig.velocity = velocityVector;
 
+    }
+
+    private void GameOver()
+    {
+        score.FinishScoring();
+
+        gameCamera.enabled = false;
+
+        gameOverScreen.SetActive(true);
+
+        this.enabled = false;
     }
 
     private void OnDrawGizmos()

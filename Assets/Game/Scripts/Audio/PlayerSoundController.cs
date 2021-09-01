@@ -6,6 +6,8 @@ public class PlayerSoundController : MonoBehaviour
 {
     public AudioClip jump;
     private AudioSource audioPlayer;
+    public AudioClip scoreHighlight;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,5 +23,10 @@ public class PlayerSoundController : MonoBehaviour
     public void PlayJump()
     {
         audioPlayer.PlayOneShot(jump);
+    }
+
+    public void PlayScoreHighlight()
+    {
+        audioPlayer.PlayOneShot(scoreHighlight);
     }
 }
